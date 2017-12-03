@@ -5,6 +5,8 @@ export function walkTree(element, context, visitor) {
         element.forEach(function (item) { return walkTree(item, context, visitor); });
         return;
     }
+    if (element === null)
+        return;
     var Component = element.type;
     if (typeof Component === 'function') {
         var props = assign({}, Component.defaultProps, element.props);

@@ -285,7 +285,6 @@ export default function graphql(document, operationOptions) {
                 var next = function (results) {
                     if (_this.type === DocumentType.Subscription) {
                         _this.lastSubscriptionData = results;
-                        results = { data: results };
                     }
                     var clashingKeys = Object.keys(observableQueryFields(results.data));
                     invariant(clashingKeys.length === 0, "the result of the '" + graphQLDisplayName + "' operation contains keys that " +
@@ -346,7 +345,7 @@ export default function graphql(document, operationOptions) {
                     assign(data, {
                         loading: !this.lastSubscriptionData,
                         variables: opts.variables,
-                    }, this.lastSubscriptionData);
+                    }, this.lastSubscriptionData && this.lastSubscriptionData.data);
                 }
                 else {
                     var currentResult = this.queryObservable.currentResult();
@@ -354,7 +353,7 @@ export default function graphql(document, operationOptions) {
                     assign(data, { loading: loading, networkStatus: networkStatus });
                     var logErrorTimeoutId_1 = setTimeout(function () {
                         if (error_1) {
-                            console.error('Unhandled (in react-apollo)', error_1.stack || error_1);
+                            console.error("Unhandled (in react-apollo:" + graphQLDisplayName + ")", error_1.stack || error_1);
                         }
                     }, 10);
                     Object.defineProperty(data, 'error', {

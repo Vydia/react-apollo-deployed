@@ -475,7 +475,6 @@ function graphql(document, operationOptions) {
                 var next = function (results) {
                     if (_this.type === DocumentType.Subscription) {
                         _this.lastSubscriptionData = results;
-                        results = { data: results };
                     }
                     var clashingKeys = Object.keys(observableQueryFields(results.data));
                     invariant$1(clashingKeys.length === 0, "the result of the '" + graphQLDisplayName + "' operation contains keys that " +
@@ -536,7 +535,7 @@ function graphql(document, operationOptions) {
                     assign(data, {
                         loading: !this.lastSubscriptionData,
                         variables: opts.variables,
-                    }, this.lastSubscriptionData);
+                    }, this.lastSubscriptionData && this.lastSubscriptionData.data);
                 }
                 else {
                     var currentResult = this.queryObservable.currentResult();
@@ -544,7 +543,7 @@ function graphql(document, operationOptions) {
                     assign(data, { loading: loading, networkStatus: networkStatus });
                     var logErrorTimeoutId_1 = setTimeout(function () {
                         if (error_1) {
-                            console.error('Unhandled (in react-apollo)', error_1.stack || error_1);
+                            console.error("Unhandled (in react-apollo:" + graphQLDisplayName + ")", error_1.stack || error_1);
                         }
                     }, 10);
                     Object.defineProperty(data, 'error', {
@@ -669,6 +668,8 @@ function walkTree(element$$1, context, visitor) {
         element$$1.forEach(function (item) { return walkTree(item, context, visitor); });
         return;
     }
+    if (element$$1 === null)
+        return;
     var Component$$1 = element$$1.type;
     if (typeof Component$$1 === 'function') {
         var props = assign$2({}, Component$$1.defaultProps, element$$1.props);
